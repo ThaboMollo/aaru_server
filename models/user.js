@@ -16,6 +16,15 @@ const userSchema = new mongoose.Schema(
       required: true,
       maxlength: 52
     },
+    username: {
+      type: String,
+      trim: true,
+      maxlength: 125
+    },
+    idNum: {
+      type: Number,
+      maxlength: 13
+    },
     email: {
       type: String,
       trim: true,
@@ -41,6 +50,10 @@ const userSchema = new mongoose.Schema(
     poems: {
       type: Array,
       default: []
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }

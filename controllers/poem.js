@@ -25,34 +25,43 @@ exports.createPoem = (req, res) => {
   })
 };
 exports.updatePoem = (req, res) => {
-  const { title, album, content, isPublished } = req.body;
-  Poem.findOne({ _id: req.profile._id }, (err, poem) => {
-    if (err || !user) {
-      return res.status(400).json({
-        error: 'Poem not found'
-      });
-    }
-    if (title) {
-      poem.title = title;
-    }
-    if (album) {
-      poem.album = album;
-    }
-    if (content) {
-      poem.content = content;
-    }
-    if (isPublished) {
-      poem.isPublished = isPublished;
-    }
-    poem.save((err, updatedPoem) => {
+  console.log('req.body', req.body);
+  console.log('poem update param', req.params.poemId);
+
+  const poem = req.poem;
+  if (req.body.title) {
+    poem.title = req.body.title;
+  }
+  if (req.body.album) {
+    poem.album = req.body.album;
+  }
+  if (req.body.content) {
+    poem.content = req.body.content;
+  }
+  if (req.body.isPublished) {
+    poem.isPublished = req.body.isPublished;
+  }
+  poem.name = req.body.name;
+  poem.save((err, data) => {
       if (err) {
-        console.log('POEM UPDATE ERROR', err);
-        return res.status(400).json({
-          error: 'Poem update failed'
-        });
+          return res.status(400).json({
+              error: errorHandler(err)
+          });
       }
-      res.json(updatedPoem);
-    });
+      res.json(data);
+  });
+};
+exports.deletePoem = (req, res) => {
+  let poem = req.poem;
+  poem.remove((err, deletedPoem) => {
+      if (err) {
+          return res.status(400).json({
+              error: errorHandler(err)
+          });
+      }
+      res.json({
+          message: 'Poem deleted successfully'
+      });
   });
 };
 exports.listAllPoems = (req, res) => {

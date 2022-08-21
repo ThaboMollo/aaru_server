@@ -18,7 +18,7 @@ exports.read = (req, res) => {
     return res.json(req.profile);
 };
 exports.update = (req, res) => {
-    const { first_name, last_name, email, phone_number } = req.body;
+    const { first_name, last_name, email, phone_number, username, idNum } = req.body;
     User.findOne({ _id: req.profile._id }, (err, user) => {
         if (err || !user) {
             return res.status(400).json({
@@ -31,10 +31,16 @@ exports.update = (req, res) => {
         if (last_name) {
             user.last_name = last_name;
         }
+        if (username) {
+            user.username = username;
+        }
+        if (idNum) {
+            user.idNum = idNum;
+        }
         if (phone_number) {
             user.phone_number = phone_number;
         }
-        if (email){
+        if (email) {
             user.email = email;
         }
         user.save((err, updatedUser) => {
@@ -47,6 +53,19 @@ exports.update = (req, res) => {
             updatedUser.hashed_password = undefined;
             updatedUser.salt = undefined;
             res.json(updatedUser);
+        });
+    });
+};
+exports.deleteUser = (req, res) => {
+    let user = req.body.user;
+    user.remove((err, deletedUser) => {
+        if (err) {
+            return res.status(400).json({
+                error: errorHandler(err)
+            });
+        }
+        res.json({
+            message: `User ${deletedUser._id} - ${deletedUser.first_name} ${deletedUser.last_name} deleted successfully`
         });
     });
 };
